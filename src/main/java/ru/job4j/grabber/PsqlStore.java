@@ -2,10 +2,10 @@ package ru.job4j.grabber;
 
 import ru.job4j.grabber.model.Post;
 import ru.job4j.grabber.util.SqlRuDateTimeParser;
+import ru.job4j.quartz.AlertRabbit;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,17 +93,8 @@ public class PsqlStore implements Store, AutoCloseable {
 
     private static Properties getProperties() {
         Properties properties = new Properties();
-        try (BufferedReader in = new BufferedReader(
-                new FileReader("./src/main/resources/grabber.properties")
-        )) {
-            for (String line = in.readLine(); line != null; line = in.readLine()) {
-                try {
-                    String[] parts = line.split("=");
-                    properties.setProperty(parts[0], parts[1]);
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("Invalid file format");
-                }
-            }
+        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("grabber.properties")) {
+            properties.load(in);
         } catch (IOException e) {
             e.printStackTrace();
         }
