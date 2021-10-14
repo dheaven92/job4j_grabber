@@ -6,6 +6,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 
+import java.io.IOException;
+
 public class SqlRuParse {
 
     public static void main(String[] args) throws Exception {
@@ -23,5 +25,18 @@ public class SqlRuParse {
             }
             page++;
         }
+        Post post = new SqlRuParse().parsePostPage("https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-"
+                + "analitiki-qa-i-devops-moskva-do-200t");
+        System.out.println(post);
+    }
+
+    public Post parsePostPage(String url) throws IOException {
+        Document doc = Jsoup.connect(url).get();
+        Post post = new Post();
+        post.setDescription(doc.select(".msgBody").get(1).text());
+        post.setCreated(new SqlRuDateTimeParser().parse(
+                doc.select(".msgFooter").text().split("\\[\\d*")[0].trim()
+        ));
+        return post;
     }
 }
