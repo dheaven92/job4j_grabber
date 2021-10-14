@@ -21,12 +21,7 @@ public class AlertRabbit {
 
     public static void main(String[] args) throws Exception {
         Properties properties = getProperties();
-        Class.forName(properties.getProperty("db.driver"));
-        try (Connection connection = DriverManager.getConnection(
-                properties.getProperty("db.url"),
-                properties.getProperty("db.username"),
-                properties.getProperty("db.password")
-        )) {
+        try (Connection connection = getConnection(properties)) {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             JobDataMap data = new JobDataMap();
@@ -72,5 +67,14 @@ public class AlertRabbit {
             e.printStackTrace();
         }
         return properties;
+    }
+
+    private static Connection getConnection(Properties properties) throws SQLException, ClassNotFoundException {
+        Class.forName(properties.getProperty("db.driver"));
+        return DriverManager.getConnection(
+                properties.getProperty("db.url"),
+                properties.getProperty("db.username"),
+                properties.getProperty("db.password")
+        );
     }
 }
