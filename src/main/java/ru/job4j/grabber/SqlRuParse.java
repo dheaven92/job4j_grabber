@@ -23,25 +23,21 @@ public class SqlRuParse implements Parser {
     @Override
     public List<Post> list(String link) {
         List<Post> posts = new ArrayList<>();
-        int page = 1;
-        while (page < 6) {
-            Document doc = null;
-            try {
-                doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + page).get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (doc != null) {
-                Elements rows = doc.select(".postslisttopic");
-                for (Element td : rows) {
-                    Post post = new Post();
-                    Element href = td.child(0);
-                    post.setTitle(href.text());
-                    post.setLink(href.attr("href"));
-                    post.setCreated(dateTimeParser.parse(td.parent().children().get(5).text()));
-                    posts.add(post);
-                }
-                page++;
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(link).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (doc != null) {
+            Elements rows = doc.select(".postslisttopic");
+            for (Element td : rows) {
+                Post post = new Post();
+                Element href = td.child(0);
+                post.setTitle(href.text());
+                post.setLink(href.attr("href"));
+                post.setCreated(dateTimeParser.parse(td.parent().children().get(5).text()));
+                posts.add(post);
             }
         }
         return posts;
