@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqlRuParse implements Parser {
+public class SqlRuParse implements Parse {
 
     private final DateTimeParser dateTimeParser;
 
