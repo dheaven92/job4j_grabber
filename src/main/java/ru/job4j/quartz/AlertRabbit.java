@@ -5,6 +5,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -61,7 +62,7 @@ public class AlertRabbit {
 
     private static Properties getProperties() {
         Properties properties = new Properties();
-        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+        try (InputStream in = new FileInputStream("./src/main/resources/rabbit.properties")) {
             properties.load(in);
         } catch (IOException e) {
             e.printStackTrace();
