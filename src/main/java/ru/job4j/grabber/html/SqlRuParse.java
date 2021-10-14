@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 
 public class SqlRuParse {
 
@@ -15,7 +16,7 @@ public class SqlRuParse {
             System.out.println(href.attr("href"));
             System.out.println(href.text());
             Element parent = td.parent();
-            System.out.println(parent.children().get(5).text());
+            System.out.println(new SqlRuDateTimeParser().parse(parent.children().get(5).text()));
             System.out.println();
         }
     }
