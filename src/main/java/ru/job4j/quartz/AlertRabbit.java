@@ -5,9 +5,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Properties;
@@ -67,17 +66,8 @@ public class AlertRabbit {
 
     private static Properties getProperties() {
         Properties properties = new Properties();
-        try (BufferedReader in = new BufferedReader(
-                new FileReader("./src/main/resources/rabbit.properties")
-        )) {
-            for (String line = in.readLine(); line != null; line = in.readLine()) {
-                try {
-                    String[] parts = line.split("=");
-                    properties.setProperty(parts[0], parts[1]);
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("Invalid file format");
-                }
-            }
+        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+            properties.load(in);
         } catch (IOException e) {
             e.printStackTrace();
         }
