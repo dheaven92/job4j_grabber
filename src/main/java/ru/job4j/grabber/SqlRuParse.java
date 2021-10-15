@@ -54,7 +54,13 @@ public class SqlRuParse implements Parse {
         }
         if (doc != null) {
             post = new Post();
+            post.setTitle(
+                    doc.select(".messageHeader").get(1).text()
+                            .replaceFirst("^Re:\\s", "")
+                            .replaceAll("\\s\\[new]$", "")
+            );
             post.setDescription(doc.select(".msgBody").get(1).text());
+            post.setLink(link);
             post.setCreated(new SqlRuDateTimeParser().parse(
                     doc.select(".msgFooter").text().split("\\[\\d*")[0].trim()
             ));
