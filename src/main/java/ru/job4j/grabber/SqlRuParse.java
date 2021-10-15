@@ -56,7 +56,7 @@ public class SqlRuParse implements Parse {
             post = new Post();
             post.setTitle(
                     doc.select(".messageHeader").get(1).text()
-                            .replaceFirst("^Re:\\s", "")
+                            .replaceAll("^Re:\\s", "")
                             .replaceAll("\\s\\[new]$", "")
             );
             post.setDescription(doc.select(".msgBody").get(1).text());
