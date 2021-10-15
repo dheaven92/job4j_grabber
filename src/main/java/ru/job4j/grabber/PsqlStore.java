@@ -1,11 +1,7 @@
 package ru.job4j.grabber;
 
 import ru.job4j.grabber.model.Post;
-import ru.job4j.grabber.util.SqlRuDateTimeParser;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,28 +83,5 @@ public class PsqlStore implements Store, AutoCloseable {
                 resultSet.getString("link"),
                 resultSet.getTimestamp("created").toLocalDateTime()
         );
-    }
-
-    private static Properties getProperties() {
-        Properties properties = new Properties();
-        try (InputStream in = new FileInputStream("./src/main/resources/grabber.properties")) {
-            properties.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return properties;
-    }
-
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Parse parse = new SqlRuParse(new SqlRuDateTimeParser());
-        Store store = new PsqlStore(getProperties());
-        List<Post> posts = parse.list("https://www.sql.ru/forum/job-offers/1");
-        posts.forEach(store::save);
-        List<Post> postsFromDb = store.getAll();
-        postsFromDb.forEach(System.out::println);
-        if (postsFromDb.size() > 0) {
-            Post postFromDb = store.findById(postsFromDb.get(0).getId());
-            System.out.println(postFromDb);
-        }
     }
 }
