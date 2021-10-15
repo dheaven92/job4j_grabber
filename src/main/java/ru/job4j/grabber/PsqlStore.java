@@ -45,13 +45,7 @@ public class PsqlStore implements Store, AutoCloseable {
         try (PreparedStatement statement = connection.prepareStatement("select * from post")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    posts.add(new Post(
-                            resultSet.getInt("id"),
-                            resultSet.getString("title"),
-                            resultSet.getString("description"),
-                            resultSet.getString("link"),
-                            resultSet.getTimestamp("created").toLocalDateTime()
-                    ));
+                    posts.add(createPostFromResultSet(resultSet));
                 }
             }
         } catch (SQLException e) {
@@ -69,13 +63,7 @@ public class PsqlStore implements Store, AutoCloseable {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    post = new Post(
-                            resultSet.getInt("id"),
-                            resultSet.getString("title"),
-                            resultSet.getString("description"),
-                            resultSet.getString("link"),
-                            resultSet.getTimestamp("created").toLocalDateTime()
-                    );
+                    post = createPostFromResultSet(resultSet);
                 }
             }
         } catch (SQLException e) {
@@ -89,6 +77,16 @@ public class PsqlStore implements Store, AutoCloseable {
         if (connection != null) {
             connection.close();
         }
+    }
+
+    private Post createPostFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Post(
+                resultSet.getInt("id"),
+                resultSet.getString("title"),
+                resultSet.getString("description"),
+                resultSet.getString("link"),
+                resultSet.getTimestamp("created").toLocalDateTime()
+        );
     }
 
     private static Properties getProperties() {
